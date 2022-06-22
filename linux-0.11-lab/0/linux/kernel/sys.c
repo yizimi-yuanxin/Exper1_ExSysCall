@@ -12,9 +12,13 @@
 #include <asm/segment.h>
 #include <sys/times.h>
 #include <sys/utsname.h>
+#include <sys/types.h>
 
 #include <signal.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
+
 
 int sys_ftime()
 {
@@ -299,6 +303,13 @@ int sys_execve2(const char *path, char * argv[], char * envp[]) {
 	return -1;
 }
 
+struct linux_dirent {
+	long           	d_ino;
+	off_t          	d_off;
+	unsigned short 	d_reclen;
+	char 			d_name[14];
+};
+
 int sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count) {
 	printk("getdents");
 	return -1;
@@ -314,18 +325,17 @@ void sig_alrm(int signo) {
 }
 
 int sys_sleep(unsigned int seconds) {
-	printk("sleep %u", seconds);
-	sys_signal(SIGALRM, sig_alrm);
-	sys_alarm(seconds);
-	printk("first alarm ok\n");
-	sys_pause();
-	// printk("pause ok\n");
-	int ret = sys_alarm(0);
-	printk("ret alarm ok\n");
+	sys_signal(SIGALRM, SIG_IGN, NULL);
+    sys_alarm(seconds);
+    sys_pause();
 	return 0;
 }
 
+extern int errno;
+#define BUF_MAX 4096
+
 long sys_getcwd(char * buf, size_t size) {
 	printk("getcwd");
+	char path[BUF_MAX];
 	return -1;
 } 
