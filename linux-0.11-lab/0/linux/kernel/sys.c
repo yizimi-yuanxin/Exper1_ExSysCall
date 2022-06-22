@@ -13,6 +13,9 @@
 #include <sys/times.h>
 #include <sys/utsname.h>
 
+#include <signal.h>
+#include <unistd.h>
+
 int sys_ftime()
 {
 	return -ENOSYS;
@@ -290,3 +293,39 @@ int sys_umask(int mask)
 	current->umask = mask & 0777;
 	return (old);
 }
+
+int sys_execve2(const char *path, char * argv[], char * envp[]) {
+	printk("execve2");
+	return -1;
+}
+
+int sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count) {
+	printk("getdents");
+	return -1;
+}
+
+int sys_pipe2() {
+	printk("pipe2");
+	return -1;
+}
+
+void sig_alrm(int signo) {
+	printk("please wake up!");
+}
+
+int sys_sleep(unsigned int seconds) {
+	printk("sleep %u", seconds);
+	sys_signal(SIGALRM, sig_alrm);
+	sys_alarm(seconds);
+	printk("first alarm ok\n");
+	sys_pause();
+	// printk("pause ok\n");
+	int ret = sys_alarm(0);
+	printk("ret alarm ok\n");
+	return 0;
+}
+
+long sys_getcwd(char * buf, size_t size) {
+	printk("getcwd");
+	return -1;
+} 

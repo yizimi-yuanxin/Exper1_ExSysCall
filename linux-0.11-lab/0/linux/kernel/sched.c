@@ -136,7 +136,7 @@ void schedule(void)
 		for(p = &LAST_TASK ; p > &FIRST_TASK ; --p)
 			if (*p)
 				(*p)->counter = ((*p)->counter >> 1) +
-						(*p)->priority;
+					(*p)->priority;
 	}
 	switch_to(next);
 }
@@ -410,3 +410,39 @@ void sched_init(void)
 	outb(inb_p(0x21)&~0x01,0x21);
 	set_system_gate(0x80,&system_call);
 }
+/*
+int sys_execve2(const char *path, char * argv[], char * envp[]) {
+	printk("execve2");
+	return -1;
+}
+
+int sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count) {
+	printk("getdents");
+	return -1;
+}
+
+int sys_pipe2() {
+	printk("pipe2");
+	return -1;
+}
+
+void sig_alrm() {
+	printk("please wake up!");
+}
+
+int sys_sleep(unsigned int seconds) {
+	printk("sleep %u", seconds);
+	signal(SIGALRM, sig_alrm);
+	alarm(seconds);
+	printk("first alarm ok\n");
+	pause();
+	// printk("pause ok\n");
+	int ret = sys_alarm(0);
+	printk("ret alarm ok\n");
+	return 0;
+}
+
+long sys_getcwd(char * buf, size_t size) {
+	printk("getcwd");
+	return -1;
+} */

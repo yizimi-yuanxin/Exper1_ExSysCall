@@ -24,6 +24,7 @@
 __always_inline _syscall0(int,fork)
 __always_inline _syscall0(int,pause)
 __always_inline _syscall1(int,setup,void *,BIOS)
+__always_inline _syscall1(int,sleep,unsigned int,seconds)
 __always_inline _syscall0(int,sync)
 
 #include <linux/tty.h>
@@ -134,6 +135,7 @@ void main(void)		/* This really IS void, no error here. */
 	buffer_init(buffer_memory_end);
 	hd_init();
 	floppy_init();
+	// sleep(2);
 	sti();
 	move_to_user_mode();
 	if (!fork()) {		/* we count on this going ok */
