@@ -60,7 +60,7 @@ struct super_block * get_super(int dev)
 	if (!dev)
 		return NULL;
 	s = 0+super_block;
-	while (s < NR_SUPER+super_block)
+	while (s < NR_SUPER + super_block)
 		if (s->s_dev == dev) {
 			wait_on_super(s);
 			if (s->s_dev == dev)
