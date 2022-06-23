@@ -67,12 +67,12 @@ typedef char buffer_block[BLOCK_SIZE];
 
 struct buffer_head {
 	char * b_data;			/* pointer to data block (1024 bytes) */
-	unsigned long b_blocknr;	/* block number */
-	unsigned short b_dev;		/* device (0 = free) */
+	unsigned long b_blocknr;	/* block number 扇区号 */
+	unsigned short b_dev;		/* device (0 = free) 设备号 / 分区号 */
 	unsigned char b_uptodate;
-	unsigned char b_dirt;		/* 0-clean,1-dirty */
-	unsigned char b_count;		/* users using this block */
-	unsigned char b_lock;		/* 0 - ok, 1 -locked */
+	unsigned char b_dirt;		/* 0-clean,1-dirty 缓存 */
+	unsigned char b_count;		/* users using this block  */
+	unsigned char b_lock;		/* 0 - ok, 1 -locked  */
 	struct task_struct * b_wait;
 	struct buffer_head * b_prev;
 	struct buffer_head * b_next;
@@ -135,7 +135,7 @@ struct super_block {
 	struct buffer_head * s_zmap[8];
 	unsigned short s_dev;
 	struct m_inode * s_isup;
-	struct m_inode * s_imount;
+	struct m_inode * s_imount;			// 
 	unsigned long s_time;
 	struct task_struct * s_wait;
 	unsigned char s_lock;
@@ -196,7 +196,12 @@ extern void free_inode(struct m_inode * inode);
 extern int sync_dev(int dev);
 extern struct super_block * get_super(int dev);
 extern int ROOT_DEV;
-
+// extern struct buffer_head * find_entry2(struct m_inode ** dir,
+// 	const char * name, int namelen, struct dir_entry ** res_dir, int yizimi);
+extern struct buffer_head * find_father_dir(struct m_inode ** dir, struct dir_entry ** re_dir);
+// extern struct buffer_head * find_same_inode(struct m_inode ** dir,
+// 	const char * name, int namelen, struct dir_entry ** res_dir, int yizimi);
+extern struct buffer_head * find_same_inode(struct m_inode ** dir, struct dir_entry ** res_dir, int yizimi);
 extern void mount_root(void);
 
 #endif

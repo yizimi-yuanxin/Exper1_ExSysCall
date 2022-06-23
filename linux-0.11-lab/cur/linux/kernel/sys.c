@@ -9,16 +9,24 @@
 #include <linux/sched.h>
 #include <linux/tty.h>
 #include <linux/kernel.h>
+#include <linux/fs.h>
 #include <asm/segment.h>
 #include <sys/times.h>
 #include <sys/utsname.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <string.h>
 
+struct linux_dirent
+{
+	long	d_ino;
+	off_t 	d_off;
+	unsigned short	d_reclen;
+	char 	d_name[];
+};
 
 int sys_ftime()
 {
@@ -303,16 +311,36 @@ int sys_execve2(const char *path, char * argv[], char * envp[]) {
 	return -1;
 }
 
-struct linux_dirent {
-	long           	d_ino;
-	off_t          	d_off;
-	unsigned short 	d_reclen;
-	char 			d_name[14];
-};
-
-int sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count) {
-	printk("getdents");
-	return -1;
+int sys_getdents (unsigned int fd, struct linux_dirent *dirp, unsigned int count)
+{
+	struct m_inode *m_ino;
+    struct buffer_head *buff_hd;
+    struct dir_entry *dir;
+    struct linux_dirent usr;
+    int i, j, res;
+    i = 0;
+    res = 0;
+    m_ino = current->filp[fd]->f_inode;
+    buff_hd = bread(m_ino->i_dev, m_ino->i_zone[0]);
+    dir = (struct dir_entry *)buff_hd->b_data;
+    while (dir[i].inode > 0)
+    {
+        if (res + sizeof(struct linux_dirent) > count)
+            break;
+        usr.d_ino = dir[i].inode;
+        usr.d_off = 0;
+        usr.d_reclen = sizeof(struct linux_dirent);
+        for (j = 0; j < 14; j++)
+        {
+            usr.d_name[j] = dir[i].name[j];
+        }
+        for(j = 0;j <sizeof(struct linux_dirent); j++){
+            put_fs_byte(((char *)(&usr))[j],(char *)dirp + res);
+            res++;
+        }
+        i++;
+    }
+    return res;
 }
 
 int sys_pipe2() {
@@ -320,11 +348,11 @@ int sys_pipe2() {
 	return -1;
 }
 
-void sig_alrm(int signo) {
+void sig_alrm(int signo) {					// by yizimi
 	printk("please wake up!");
 }
 
-int sys_sleep(unsigned int seconds) {
+int sys_sleep(unsigned int seconds) { 		// by yizimi
 	sys_signal(SIGALRM, SIG_IGN, NULL);
     sys_alarm(seconds);
     sys_pause();
@@ -334,8 +362,49 @@ int sys_sleep(unsigned int seconds) {
 extern int errno;
 #define BUF_MAX 4096
 
-long sys_getcwd(char * buf, size_t size) {
-	printk("getcwd");
-	char path[BUF_MAX];
-	return -1;
-} 
+long sys_getcwd(char * buf, size_t size) { 	// by yizimi
+	// printk("getcwd");
+	char buf_name[BUF_MAX];
+	char *nowbuf; 
+	struct dir_entry * de;
+	struct dir_entry * det;
+	struct buffer_head * bh;
+	nowbuf = (char *)malloc(BUF_MAX * sizeof(char));
+	struct m_inode *now_inode = current->pwd;
+	int idev, inid, block;
+
+	// printk("[buf-pos] %d\n", buf);
+
+	int prev_inode_num = now_inode->i_num;
+	if (now_inode == current->root)
+		strcpy(nowbuf, "/");
+
+	while (now_inode != current->root) {
+		// printk("[debug] try find_entry2...\n");
+		// bh = find_entry2(&now_inode, "..", 2, &det, 0);
+		bh = find_father_dir(&now_inode, &det);
+		// printk("[dir_entry now] %d %s\n", det->inode, det);
+		idev = now_inode->i_dev;
+		inid = det->inode;
+		// printk("[debug] try iget... \n");
+		now_inode = iget(idev, inid);
+		// printk("[debug] try find_entry3...\n");
+		// bh = find_same_inode(&now_inode, "lala", 4, &de, prev_inode_num);
+		bh = find_same_inode(&now_inode, &de, prev_inode_num);
+		prev_inode_num = det->inode;
+		strcpy(buf_name, "/");
+		strcat(buf_name, de->name);
+		strcat(buf_name, nowbuf);
+		strcpy(nowbuf, buf_name);
+		// printk("[nowbuf] %s\n", nowbuf);
+	}
+	// printk("[debug] try strcpy...\n");
+	int chars = size;
+	// printk("[buf-pos] %d\n", buf);
+	char *p1 = nowbuf, *p2 = buf;
+	++size;
+	while (size-- > 0)
+		put_fs_byte(*(p1++), p2++);
+	// printk("[buf-pos] %d\n", buf);
+	return (long)buf;
+}  

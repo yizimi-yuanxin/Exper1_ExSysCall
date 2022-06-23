@@ -69,7 +69,7 @@ void sync_inodes(void)
 	}
 }
 
-static int _bmap(struct m_inode * inode,int block,int create)
+static int _bmap(struct m_inode * inode,int block,int create) // 用于文件数据块映射到盘块的处理操作
 {
 	struct buffer_head * bh;
 	int i;
@@ -137,7 +137,7 @@ static int _bmap(struct m_inode * inode,int block,int create)
 	return i;
 }
 
-int bmap(struct m_inode * inode,int block)
+int bmap(struct m_inode * inode,int block) // 用于文件数据块映射到盘块的处理操作
 {
 	return _bmap(inode,block,0);
 }
@@ -147,7 +147,7 @@ int create_block(struct m_inode * inode, int block)
 	return _bmap(inode,block,1);
 }
 		
-void iput(struct m_inode * inode)
+void iput(struct m_inode * inode) // 从设备上读取指定的inode节点号，就是实现从设备（存数介质）到内存inode数组的转移
 {
 	if (!inode)
 		return;
