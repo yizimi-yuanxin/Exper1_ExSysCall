@@ -19,6 +19,13 @@
 #include <fcntl.h>
 #include <string.h>
 
+struct linux_dirent
+{
+	long	d_ino;
+	off_t 	d_off;
+	unsigned short	d_reclen;
+	char 	d_name[];
+};
 
 int sys_ftime()
 {
@@ -303,16 +310,36 @@ int sys_execve2(const char *path, char * argv[], char * envp[]) {
 	return -1;
 }
 
-struct linux_dirent {
-	long           	d_ino;
-	off_t          	d_off;
-	unsigned short 	d_reclen;
-	char 			d_name[14];
-};
-
-int sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count) {
-	printk("getdents");
-	return -1;
+int sys_getdents (unsigned int fd, struct linux_dirent *dirp, unsigned int count)
+{
+	struct m_inode *m_ino;
+    struct buffer_head *buff_hd;
+    struct dir_entry *dir;
+    struct linux_dirent usr;
+    int i, j, res;
+    i = 0;
+    res = 0;
+    m_ino = current->filp[fd]->f_inode;
+    buff_hd = bread(m_ino->i_dev, m_ino->i_zone[0]);
+    dir = (struct dir_entry *)buff_hd->b_data;
+    while (dir[i].inode > 0)
+    {
+        if (res + sizeof(struct linux_dirent) > count)
+            break;
+        usr.d_ino = dir[i].inode;
+        usr.d_off = 0;
+        usr.d_reclen = sizeof(struct linux_dirent);
+        for (j = 0; j < 14; j++)
+        {
+            usr.d_name[j] = dir[i].name[j];
+        }
+        for(j = 0;j <sizeof(struct linux_dirent); j++){
+            put_fs_byte(((char *)(&usr))[j],(char *)dirp + res);
+            res++;
+        }
+        i++;
+    }
+    return res;
 }
 
 int sys_pipe2() {
@@ -323,6 +350,8 @@ int sys_pipe2() {
 void sig_alrm(int signo) {
 	printk("please wake up!");
 }
+
+
 
 int sys_sleep(unsigned int seconds) {
 	sys_signal(SIGALRM, SIG_IGN, NULL);
