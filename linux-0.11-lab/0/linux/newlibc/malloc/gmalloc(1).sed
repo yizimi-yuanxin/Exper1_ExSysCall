@@ -1,0 +1,15 @@
+1i\
+\
+/* gmalloc.c - THIS FILE IS AUTOMAGICALLY GENERATED SO DON'T EDIT IT. */\
+
+/DO NOT DELETE THIS LINE -- ansidecl.h INSERTED HERE/r ansidecl.h
+/DO NOT DELETE THIS LINE -- limits.h INSERTED HERE/r limits.h
+/DO NOT DELETE THIS LINE -- stddef.h INSERTED HERE/r stddef.h
+/DO NOT DELETE THIS LINE -- stdlib.h INSERTED HERE/r stdlib.h
+/DO NOT DELETE THIS LINE -- string.h INSERTED HERE/r string.h
+/DO NOT DELETE THIS LINE -- malloc.h INSERTED HERE/r malloc.h
+/DO NOT DELETE THIS LINE -- free.c INSERTED HERE/r free.c
+/DO NOT DELETE THIS LINE -- malloc.c INSERTED HERE/r malloc.c
+/DO NOT DELETE THIS LINE -- realloc.c INSERTED HERE/r realloc.c
+/DO NOT DELETE THIS LINE -- unix.c INSERTED HERE/r unix.c
+/DO NOT DELETE THIS LINE -- valloc.c INSERTED HERE/r valloc.c

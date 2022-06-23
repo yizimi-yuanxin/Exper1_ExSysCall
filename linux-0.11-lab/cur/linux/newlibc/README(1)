@@ -1,0 +1,73 @@
+[ Note: This package was submitted to tsx-11.mit.edu by hlu@wsu.edu, on
+  Feb 20, 1992.  -TYT ]
+
+Release Note
+-------------------------------------------------------------------
+This is the package of gcc 1.40 with 387 support and the libraries,
+which include two math libraries, libm.a for with a 387 and libsoft.a
+for without a 387, and a separate libtermcap.a taken from GNU's
+tput 1.10.
+
+This gcc supports 387. There are enough 387 emulations in 0.12
+kernel to let gcc run without a 387. But libm.a definitely needs a 
+387 for now. If you don't have a 387, use -lsoft instead of -lm.
+
+GNU's binary utilities 1.9 are also included. They should be also used
+instead of the old ones.
+
+The buggy estdio is replaced by BSD stdio (non ANSI). The stdio used in
+this package is from BSD 4.3, I think it's the one before networking
+release. Make sure not to define USG stdio.
+
+Some header files must be replaced by the ones included in this package.
+
+The -mstring-insns option is no longer needed, which is added to the
+old gcc for Linux and is not among the options for the standard gcc.
+
+The -O option may fail when the INLINE functions (string.h) are passed 
+as parameters. There is nothing wrong with compiler(?). They will be
+fixed in gcc 2.0. You can change the source to avoid that.
+
+They are some PRE_GCC_2. Please DOT NOT defines them. They are for
+testing gcc 2.0 only.
+
+Since there is no ptrace() in the 0.12 kernel. The -g option is
+permanently disabled. It will be there in gcc 2.0. If you really need it,
+please drop me a note. I just add a new cc1, called cc1.g, which
+supports gdb. But it has not been tested.
+
+I hope somebody will recompile all the binaries with this new gcc and
+make them available for ftp. The new binaries should be smaller and
+have less bugs.
+
+The directory, crt, is used to make a crt0.o you like, although I
+think the current one is quite reasonable.
+
+When you use perror (), you may want to declare it first somewhere. The
+current stdio.h doesn't declare it. It will find its place in some
+header file when gcc 2.0 is released.
+
+There is a new 387 math library which is better but has not been
+tested. You can test it by replacing "math" with "mlinux" of DIRS in
+Makefile. The hyperbolic functions may be not very accurate when x is
+very small, like 1e-6. You will see what I mean. I don't think it will
+cause much trouble.
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+INSTALL
+---------------------------------------------------------------------
+
+You only need to modify the top level Makefile to suit your system.
+Make sure compiler and binary utilities are OK as well as header files.
+
+You should have ../soft in your search path for header files.
+
+You should only issue make at the top directory. Otherwise, some
+variables may not be defined.
+
+You can modify crt0.s to get the crt0.o you like.
+
+H.J.
+hlu@eecs.wsu.edu
+02/18/92

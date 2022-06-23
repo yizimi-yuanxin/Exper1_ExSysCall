@@ -1,0 +1,54 @@
+/* Single-file skeleton for GNU malloc.
+   Copyright 1989 Free Software Foundation
+		  Written May 1989 by Mike Haertel.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 1, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   The author may be reached (Email) at the address mike@ai.mit.edu,
+   or (US mail) as Mike Haertel c/o Free Software Foundation. */
+
+#define __ONEFILE
+
+/* DO NOT DELETE THIS LINE -- ansidecl.h INSERTED HERE. */
+
+#ifdef __STDC__
+#include <limits.h>
+#else
+/* DO NOT DELETE THIS LINE -- limits.h INSERTED HERE. */
+#endif
+
+#ifdef __STDC__
+#include <stddef.h>
+#else
+/* DO NOT DELETE THIS LINE -- stddef.h INSERTED HERE. */
+#endif
+
+/* DO NOT DELETE THIS LINE -- stdlib.h INSERTED HERE. */
+
+/* DO NOT DELETE THIS LINE -- string.h INSERTED HERE. */
+
+#define _MALLOC_INTERNAL
+/* DO NOT DELETE THIS LINE -- malloc.h INSERTED HERE. */
+
+/* DO NOT DELETE THIS LINE -- free.c INSERTED HERE. */
+
+/* DO NOT DELETE THIS LINE -- malloc.c INSERTED HERE. */
+
+/* DO NOT DELETE THIS LINE -- realloc.c INSERTED HERE. */
+
+/* DO NOT DELETE THIS LINE -- unix.c INSERTED HERE. */
+
+#define __getpagesize getpagesize
+/* DO NOT DELETE THIS LINE -- valloc.c INSERTED HERE. */

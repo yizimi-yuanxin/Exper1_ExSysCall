@@ -1,0 +1,62 @@
+#ifndef __SOFT_H
+#define __SOFT_H
+
+#include <math.h>
+#include <errno.h>
+
+extern int finite(double);
+extern double infnan(int);
+
+extern double pio2;
+extern double *double_inf, *double_minf, *double_NaN;
+extern double *double_huge, *double_tiny;
+extern float *float_huge, *float_tiny;
+
+struct bitdouble {	/* internal format of an IEEE double */
+	unsigned mant2;
+	unsigned mant1 : 20;
+	unsigned exp : 11;
+	unsigned sign : 1;	/* 0=pos, 1=neg */
+};			/* value = 2^(exp-BIAS) * 0b1.|mant|mant2 */
+
+struct bitfloat {	/* format of a float (single-precision IEEE) */
+	unsigned mant : 23;
+	unsigned exp : 8;
+	unsigned sign : 1;
+};
+
+/* <errno.h> constants used by infnan() */
+#ifndef EDOM
+#define EDOM		33
+#endif
+#ifndef ERANGE
+#define ERANGE		34
+#endif
+
+#define PI		3.141592653589793238
+#define HUGE		1.701411733192644270e38
+#define HUGEDOUBLE	3.59538626972463181545861038157804946723595395\
+7884613145468601623154653516110019262654169546448150720422402277597427\
+8671531757953762883324498569486127894824875553578684973097055260443920\
+2492188238906165904170011537676301364684925762947826221081654474326701\
+021369172596479894491876959432609670712659248448274431e308
+
+/* note: GNU CC floating-point constants are all treated as 'float's, 
+ * so loss of precision will result accordingly when using constants;
+ * an eventual atof() should handle full double values, with which
+ * HUGEDOUBLE may be used. -meg
+ */
+
+#define INFINITE	(*double_inf)
+#define NEG_INFINITE	(*double_minf)
+#define NOT_A_NUMBER	(*double_NaN)
+#define DHUGE		(*double_huge)
+#define DTINY		(*double_tiny)
+#define FHUGE		(*float_huge)
+#define FTINY		(*float_tiny)
+
+#define BIAS		0x3ff	/* added to exp of bitdouble */
+#define MAXPREC		310	/* HUGEDOUBLE~=3.59...e308=2^1025 */
+#define MAXDIGITS	20 	/* of possibly useful precision in a double */
+
+#endif

@@ -31,7 +31,7 @@
 00000000000i[      ]   Sound support: no
 00000000000i[      ]   USB support: no
 00000000000i[      ]   VGA extension support: vbe
-00000000000i[MEM0  ] allocated memory at 0xb58f1008. after alignment, vector=0xb58f2000
+00000000000i[MEM0  ] allocated memory at 0xb5936008. after alignment, vector=0xb5937000
 00000000000i[MEM0  ] 16.00MB
 00000000000i[MEM0  ] mem block size = 0x00020000, blocks=128
 00000000000i[MEM0  ] rom at 0xfffe0000/131072 ('/usr/local/share/bochs/BIOS-bochs-latest')
@@ -42,7 +42,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Wed Jun 22 13:16:41 2022 (time0=1655900201)
+00000000000i[CMOS  ] Setting initial clock to: Thu Jun 23 09:03:02 2022 (time0=1655971382)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -60,7 +60,7 @@
 00000000000i[FLOPPY] fd0: 'cur/linux/Image' ro=0, h=2,t=80,spt=18
 00000000000i[IMG   ] redolog : Standard Header : magic='Bochs Virtual HD Image', type='Redolog', subtype='Volatile', version = 2.0
 00000000000i[IMG   ] redolog : Specific Header : #entries=512, bitmap size=1, exent size = 4096 disk size = 1474560
-00000000000i[IMG   ] 'vvfat' disk opened: directory is 'b/', redolog is 'b//vvfat.dir.Cp6GfX'
+00000000000i[IMG   ] 'vvfat' disk opened: directory is 'b/', redolog is 'b//vvfat.dir.JfGJ74'
 00000000000i[FLOPPY] fd1: 'vvfat:b/' ro=0, h=2,t=80,spt=18
 00000000000i[FLOPPY] Using boot sequence floppy, none, none
 00000000000i[FLOPPY] Floppy boot signature check is enabled
@@ -185,17 +185,11 @@
 00001647811i[BXVGA ] VBE known Display Interface b0c0
 00001647843i[BXVGA ] VBE known Display Interface b0c5
 00001650768i[VBIOS ] VBE Bios $Id: vbe.c,v 1.64 2011/07/19 18:25:05 vruppert Exp $
-00001995333i[BIOS  ] ata0-0: PCHS=512/2/20 translation=none LCHS=512/2/20
-00002969775i[XGUI  ] charmap update. Font is 9 x 16
-00005872240i[BIOS  ] IDE time out
+00001995563i[BIOS  ] ata0-0: PCHS=512/2/20 translation=none LCHS=512/2/20
+00002387040i[XGUI  ] charmap update. Font is 9 x 16
+00005872470i[BIOS  ] IDE time out
 00051753879i[BIOS  ] Booting from 0000:7c00
-00094454833i[FLOPPY] partial read() on floppy image returns 452/512
-00094621498i[FLOPPY] read() on floppy image returns 0
-00094788163i[FLOPPY] read() on floppy image returns 0
-00094954828i[FLOPPY] read() on floppy image returns 0
-00095122539i[FLOPPY] read() on floppy image returns 0
-00095289204i[FLOPPY] read() on floppy image returns 0
-00095455869i[FLOPPY] read() on floppy image returns 0
+00095455869i[FLOPPY] partial read() on floppy image returns 336/512
 00095622534i[FLOPPY] read() on floppy image returns 0
 00095789199i[FLOPPY] read() on floppy image returns 0
 00095955864i[FLOPPY] read() on floppy image returns 0
@@ -322,26 +316,28 @@
 00116129680i[FLOPPY] read() on floppy image returns 0
 00116296345i[FLOPPY] read() on floppy image returns 0
 00116467319i[BIOS  ] int13_harddisk: function 15, unmapped device for ELDL=81
-04159050000p[XGUI  ] >>PANIC<< POWER button turned off.
-04159050000i[CPU0  ] CPU is in protected mode (active)
-04159050000i[CPU0  ] CS.mode = 32 bit
-04159050000i[CPU0  ] SS.mode = 32 bit
-04159050000i[CPU0  ] EFER   = 0x00000000
-04159050000i[CPU0  ] | EAX=0001cf60  EBX=00090080  ECX=0001bec0  EDX=00000000
-04159050000i[CPU0  ] | ESP=0001ce6c  EBP=00022c0c  ESI=000900a0  EDI=00021c20
-04159050000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
-04159050000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-04159050000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 00ffffff 1 1
-04159050000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-04159050000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-04159050000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-04159050000i[CPU0  ] |  FS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
-04159050000i[CPU0  ] |  GS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
-04159050000i[CPU0  ] | EIP=00006e16 (00006e16)
-04159050000i[CPU0  ] | CR0=0x8000001b CR2=0x0804253c
-04159050000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
-04159050000i[CPU0  ] 0x00006e16>> mov eax, dword ptr ds:[eax] : 8B00
-04159050000i[CMOS  ] Last time is 1655900478 (Wed Jun 22 13:21:18 2022)
-04159050000i[XGUI  ] Exit
-04159050000i[      ] restoring default signal behavior
-04159050000i[SIM   ] quit_sim called with exit code 1
+00182707134e[CPU0  ] read_virtual_checks(): read beyond limit
+00198254040e[CPU0  ] write_virtual_checks(): write beyond limit, r/w
+00510315000p[XGUI  ] >>PANIC<< POWER button turned off.
+00510315000i[CPU0  ] CPU is in protected mode (active)
+00510315000i[CPU0  ] CS.mode = 32 bit
+00510315000i[CPU0  ] SS.mode = 32 bit
+00510315000i[CPU0  ] EFER   = 0x00000000
+00510315000i[CPU0  ] | EAX=0000001f  EBX=000a0000  ECX=00000000  EDX=0000001f
+00510315000i[CPU0  ] | ESP=0001d86c  EBP=0002378c  ESI=00007404  EDI=000227a0
+00510315000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf AF pf cf
+00510315000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+00510315000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 00ffffff 1 1
+00510315000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00510315000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00510315000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00510315000i[CPU0  ] |  FS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00510315000i[CPU0  ] |  GS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
+00510315000i[CPU0  ] | EIP=0000887d (0000887d)
+00510315000i[CPU0  ] | CR0=0x8000001b CR2=0x0000692b
+00510315000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
+00510315000i[CPU0  ] 0x0000887d>> jmp .-2 (0x0000887d) : EBFE
+00510315000i[CMOS  ] Last time is 1655971416 (Thu Jun 23 09:03:36 2022)
+00510315000i[XGUI  ] Exit
+00510315000i[      ] restoring default signal behavior
+00510315000i[SIM   ] quit_sim called with exit code 1

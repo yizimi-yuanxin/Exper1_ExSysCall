@@ -1,0 +1,7 @@
+These files are from all over the places. I didn't put readv () in
+libc.a. You can add it your self. It will be in libc.a when gcc 2.0
+is released.
+
+H.J. Lu
+hlu@eecs.wsu.edu
+02/18/92

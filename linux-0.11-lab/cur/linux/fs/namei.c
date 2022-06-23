@@ -90,12 +90,13 @@ static int match(int len,const char * name,struct dir_entry * de)
  */
 static struct buffer_head * find_entry(struct m_inode ** dir,
 	const char * name, int namelen, struct dir_entry ** res_dir)
+	// name 由系统调用传进来，来自于用户空间
 {
 	int entries;
 	int block,i;
 	struct buffer_head * bh;
 	struct dir_entry * de;
-	struct super_block * sb;
+	struct super_block * sb; 
 
 #ifdef NO_TRUNCATE
 	if (namelen > NAME_LEN)
@@ -104,33 +105,35 @@ static struct buffer_head * find_entry(struct m_inode ** dir,
 	if (namelen > NAME_LEN)
 		namelen = NAME_LEN;
 #endif
-	entries = (*dir)->i_size / (sizeof (struct dir_entry));
+	entries = (*dir)->i_size / (sizeof (struct dir_entry)); // 该目录的的文件总数
 	*res_dir = NULL;
 	if (!namelen)
 		return NULL;
 /* check for '..', as we might have to do some "magic" for it */
 	if (namelen==2 && get_fs_byte(name)=='.' && get_fs_byte(name+1)=='.') {
+					// fs 内核访问用户空间的数据段
 /* '..' in a pseudo-root results in a faked '.' (just change namelen) */
 		if ((*dir) == current->root)
 			namelen=1;
 		else if ((*dir)->i_num == ROOT_INO) {
 /* '..' over a mount-point results in 'dir' being exchanged for the mounted
    directory-inode. NOTE! We set mounted, so that we can iput the new dir */
-			sb=get_super((*dir)->i_dev);
-			if (sb->s_imount) {
-				iput(*dir);
+			sb=get_super((*dir)->i_dev);    // 获得超级块位置
+			if (sb->s_imount) {				// 如果超级块数
+				iput(*dir);					// 从设备上读取指定的inode节点号，就是实现从设备（存数介质）到内存inode数组的转移
 				(*dir)=sb->s_imount;
-				(*dir)->i_count++;
+				(*dir)->i_count++;			
 			}
 		}
 	}
-	if (!(block = (*dir)->i_zone[0]))
+	if (!(block = (*dir)->i_zone[0])) 		// zone[]文件所占用的盘上逻辑块号数组 
 		return NULL;
-	if (!(bh = bread((*dir)->i_dev,block)))
+	if (!(bh = bread((*dir)->i_dev,block))) // 通过i节点找到设备号和逻辑盘块号（数据块号）
+											// 从而将硬盘上的指定数据块读入相应缓冲区中 
 		return NULL;
 	i = 0;
-	de = (struct dir_entry *) bh->b_data;
-	while (i < entries) {
+	de = (struct dir_entry *) bh->b_data;   // 
+	while (i < entries) {					// 遍历该目录中的文件总数
 		if ((char *)de >= BLOCK_SIZE+bh->b_data) {
 			brelse(bh);
 			bh = NULL;
@@ -151,6 +154,141 @@ static struct buffer_head * find_entry(struct m_inode ** dir,
 	brelse(bh);
 	return NULL;
 }
+
+// code Ctrl+C/V from find_entry 
+// by yizimi
+// Find the father dir 
+// and return the dir_entry** res_dir
+// We didn't need the return buffer_head
+struct buffer_head * find_father_dir(struct m_inode ** dir, struct dir_entry ** res_dir)
+{
+	int entries;
+	int block,i;
+	struct buffer_head * bh;
+	struct dir_entry * de;
+	struct super_block * sb; 
+	int namelen = 2;
+	const char name[] = "..";
+
+#ifdef NO_TRUNCATE
+	if (namelen > NAME_LEN)
+		return NULL;
+#else
+	if (namelen > NAME_LEN)
+		namelen = NAME_LEN;
+#endif
+	entries = (*dir)->i_size / (sizeof (struct dir_entry)); 
+	*res_dir = NULL;
+	if (!namelen)
+		return NULL;
+	if (namelen==2 && get_fs_byte(name)=='.' && get_fs_byte(name+1)=='.') {
+		if ((*dir) == current->root)
+			namelen=1;
+		else if ((*dir)->i_num == ROOT_INO) {
+			sb=get_super((*dir)->i_dev);    
+			if (sb->s_imount) {				
+				iput(*dir);					
+				(*dir)=sb->s_imount;
+				(*dir)->i_count++;			
+			}
+		}
+	}
+	if (!(block = (*dir)->i_zone[0])) 		
+		return NULL;
+	if (!(bh = bread((*dir)->i_dev,block))) 
+		return NULL;
+	i = 0;
+	de = (struct dir_entry *) bh->b_data;   
+	while (i < entries) {					
+		if ((char *)de >= BLOCK_SIZE+bh->b_data) {
+			brelse(bh);
+			bh = NULL;
+			if (!(block = bmap(*dir,i/DIR_ENTRIES_PER_BLOCK)) ||
+			    !(bh = bread((*dir)->i_dev,block))) {
+				i += DIR_ENTRIES_PER_BLOCK;
+				continue;
+			}
+			de = (struct dir_entry *) bh->b_data;
+		}
+		// The only changed code there...
+		if ((de->name[0] == '.' && de->name[1] == '.' && de->name[2] == '\0')) {
+			*res_dir = de;
+			return bh;
+		}
+		de++;
+		i++;
+	}
+	brelse(bh);
+	return NULL;
+}
+
+
+// code Ctrl+C/V from find_entry
+// by yizimi
+// Find the dir which has the same inode num
+// and retrun the dir_entry** res_dir
+// yizimi: the target of inode number
+// We didn't need the return buffer_head
+struct buffer_head * find_same_inode(struct m_inode ** dir, struct dir_entry ** res_dir, int yizimi)
+{
+	int entries;
+	int block,i;
+	struct buffer_head * bh;
+	struct dir_entry * de;
+	struct super_block * sb; 
+	int namelen = 7;
+	const char name[] = "yizimi";
+#ifdef NO_TRUNCATE
+	if (namelen > NAME_LEN)
+		return NULL;
+#else
+	if (namelen > NAME_LEN)
+		namelen = NAME_LEN;
+#endif
+	entries = (*dir)->i_size / (sizeof (struct dir_entry)); 
+	*res_dir = NULL;
+	if (!namelen)
+		return NULL;
+	if (namelen==2 && name[0]=='.' && name[1]=='.') {
+		if ((*dir) == current->root)
+			namelen=1;
+		else if ((*dir)->i_num == ROOT_INO) {
+			sb=get_super((*dir)->i_dev);    
+			if (sb->s_imount) {				
+				iput(*dir);					
+				(*dir)=sb->s_imount;
+				(*dir)->i_count++;			
+			}
+		}
+	}
+	if (!(block = (*dir)->i_zone[0])) 		 
+		return NULL;
+	if (!(bh = bread((*dir)->i_dev,block))) 
+		return NULL;
+	i = 0;
+	de = (struct dir_entry *) bh->b_data;   
+	while (i < entries) {					
+		if ((char *)de >= BLOCK_SIZE+bh->b_data) {
+			brelse(bh);
+			bh = NULL;
+			if (!(block = bmap(*dir,i/DIR_ENTRIES_PER_BLOCK)) ||
+			    !(bh = bread((*dir)->i_dev,block))) {
+				i += DIR_ENTRIES_PER_BLOCK;
+				continue;
+			}
+			de = (struct dir_entry *) bh->b_data; 
+		}
+		if (yizimi == de->inode) { // The only changed code there...
+			*res_dir = de;
+			return bh;
+		}
+		de++;
+		i++;
+	}
+	brelse(bh);
+	return NULL;
+}
+
 
 /*
  *	add_entry()

@@ -1,0 +1,1 @@
+To compile the lib, you should set the variable SRCDIR (in Makefile) to correct path.

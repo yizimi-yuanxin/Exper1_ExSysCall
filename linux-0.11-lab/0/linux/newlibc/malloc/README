@@ -1,0 +1,4 @@
+This is a alpha/pre-alpha version of the new GNU malloc, and is
+intended for people who want to play with it/look for bugs/etc.  It
+has not been extensively tested and is not intended for widespread
+distribution.  Bug reports should be sent to mike@ai.mit.edu.
