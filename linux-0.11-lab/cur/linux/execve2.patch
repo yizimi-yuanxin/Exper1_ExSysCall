@@ -1,0 +1,41 @@
+diff -Naur 0/linux/init/main.c 4/linux/init/main.c
+--- 0/linux/init/main.c	2016-08-08 09:40:13.000000000 +0800
++++ 4/linux/init/main.c	2021-07-06 14:16:56.000000000 +0800
+@@ -208,3 +208,9 @@
+ 	}
+ 	_exit(0);	/* NOTE! _exit, not exit() */
+ }
++
++void print_nr(int sid)
++{
++	if (sid > 86)
++		printk(" --syscall: sid=%d, pid=%d\n", sid, current->pid);
++}
+diff -Naur 0/linux/kernel/system_call.s 4/linux/kernel/system_call.s
+--- 0/linux/kernel/system_call.s	2015-09-03 20:21:09.000000000 +0800
++++ 4/linux/kernel/system_call.s	2021-07-06 14:18:56.000000000 +0800
+@@ -91,6 +91,11 @@
+ 	mov %dx,%es
+ 	movl $0x17,%edx		# fs points to local data space
+ 	mov %dx,%fs
++
++	pushl %eax   #by wyj
++	call print_nr
++	popl %eax
++
+ 	call sys_call_table(,%eax,4)
+ 	pushl %eax
+ 	movl current,%eax
+diff -Naur 0/linux/mm/memory.c 4/linux/mm/memory.c
+--- 0/linux/mm/memory.c	2015-09-04 15:24:20.000000000 +0800
++++ 4/linux/mm/memory.c	2021-07-06 14:21:45.000000000 +0800
+@@ -370,6 +370,9 @@
+ 	unsigned long page;
+ 	int block,i;
+ 
++	if (current->pid > 5)
++		printk(" --do_no_page: address=%x, pid=%d\n", address, current->pid);
++		
+ 	address &= 0xfffff000;
+ 	tmp = address - current->start_code;
+ 	if (!current->executable || tmp >= current->end_data) {

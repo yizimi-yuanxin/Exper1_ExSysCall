@@ -25,7 +25,7 @@ struct linux_dirent
 	long	d_ino;
 	off_t 	d_off;
 	unsigned short	d_reclen;
-	char 	d_name[];
+	char 	d_name[14];
 };
 
 int sys_ftime()
@@ -304,11 +304,6 @@ int sys_umask(int mask)
 
 	current->umask = mask & 0777;
 	return (old);
-}
-
-int sys_execve2(const char *path, char * argv[], char * envp[]) {
-	printk("execve2");
-	return -1;
 }
 
 int sys_getdents (unsigned int fd, struct linux_dirent *dirp, unsigned int count)

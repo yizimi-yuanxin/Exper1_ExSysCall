@@ -1,0 +1,12 @@
+--- mm/memory.c	2015-09-04 15:24:20.000000000 +0800
++++ mm/memory.c	2021-07-06 14:21:45.000000000 +0800
+@@ -370,6 +370,9 @@
+ 	unsigned long page;
+ 	int block,i;
+ 
++	if (current->pid > 5)
++		printk(" --do_no_page: address=%x, pid=%d\n", address, current->pid);
++		
+ 	address &= 0xfffff000;
+ 	tmp = address - current->start_code;
+ 	if (!current->executable || tmp >= current->end_data) {
