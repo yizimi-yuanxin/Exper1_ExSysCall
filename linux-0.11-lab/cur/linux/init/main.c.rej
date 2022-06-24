@@ -1,0 +1,12 @@
+--- init/main.c	2016-08-08 09:40:13.000000000 +0800
++++ init/main.c	2021-07-06 14:16:56.000000000 +0800
+@@ -208,3 +208,9 @@
+ 	}
+ 	_exit(0);	/* NOTE! _exit, not exit() */
+ }
++
++void print_nr(int sid)
++{
++	if (sid > 86)
++		printk(" --syscall: sid=%d, pid=%d\n", sid, current->pid);
++}
