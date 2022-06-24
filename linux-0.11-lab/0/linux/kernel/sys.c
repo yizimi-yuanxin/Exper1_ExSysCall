@@ -306,11 +306,6 @@ int sys_umask(int mask)
 	return (old);
 }
 
-int sys_execve2(const char *path, char * argv[], char * envp[]) {
-	printk("execve2");
-	return -1;
-}
-
 int sys_getdents (unsigned int fd, struct linux_dirent *dirp, unsigned int count)
 {
 	struct m_inode *m_ino;
