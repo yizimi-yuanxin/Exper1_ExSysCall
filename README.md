@@ -1,6 +1,5 @@
 1.  # 操作系统 Linux 系统调用扩充实验报告
     
-    <p align="right">小组：202002001021 李天豪 | 202002001037 谭承浩</p>
     
     ## 一、实验目的及分工
     
@@ -8,14 +7,9 @@
     
     实现的系统调用为：
     
-    ```c++
+  
     execve2, getdents, sleep, getcwd
-    ```
     
-    | 小组分工 | 实现函数          | GitHub用户名     | commit log 署名 |
-    | -------- | ----------------- | ---------------- | --------------- |
-    | 李天豪   | sleep, getcwd     | yizimi-yuanxin   | yizimi          |
-    | 谭承浩   | execve2, getdents | TCH-202002001037 | TCH             |
     
     ## 二、实验环境
     
